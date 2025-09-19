@@ -917,29 +917,20 @@ function sendToTelegram() {
   const WEB_APP_URL =
     'https://script.google.com/macros/s/AKfycbyF02w8EOy04XliJ64Q_1bGsZos4rafV2FxpevdLU304bxT9PkgNm0GewxJqUX8evb2/exec';
 
-  fetch(WEB_APP_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    cache: 'no-cache',
-    redirect: 'follow',
-    body: new URLSearchParams(data),
-  })
-    .then((res) => res.text())
-    .then((text) => {
-      try {
-        const data = JSON.parse(text);
-        alert(data.message);
-        // اگر سرور پاسخ موفقیت‌آمیز برگرداند، کد تخفیف را ذخیره کن
-        localStorage.setItem('previousCode', code);
-      } catch (e) {
-        alert('✅ اطلاعات با موفقیت ارسال شد!');
-        // اگر سرور پاسخ معتبری نداد، اما ارسال موفق بوده، کد تخفیف را ذخیره کن
-        localStorage.setItem('previousCode', code);
-      }
-    })
-    .catch((err) => {
-      alert('❌ خطا در ارسال اطلاعات: ' + err.message);
-    });
+fetch(WEB_APP_URL, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  body: new URLSearchParams(data),
+})
+.then(res => res.json())
+.then(response => {
+  alert(response.message);
+  localStorage.setItem('previousCode', code);
+})
+.catch(err => {
+  alert('❌ خطا در ارسال اطلاعات: ' + err.message);
+});
+
 }
 
 
@@ -1844,5 +1835,6 @@ window.addEventListener('DOMContentLoaded', () => {
   </script>
 </body>
 </html>
+
 
 
