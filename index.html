@@ -297,7 +297,6 @@ border-radius: 0px;
   </a>
 </header>
 
-
 <h2 style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
   فایل ماشین
    <span id="today-date" style="font-size: 0.6em; color: #888; font-weight: normal; white-space: nowrap;">
@@ -594,13 +593,14 @@ border-radius: 0px;
   <button onclick="confirmDesc()">تأیید</button>
 </div>
 
-  <button onclick="generateText()">📄 ایجاد فایل</button>
+  <button onclick="viewFile()">📄 مشاهده فایل</button>
   <div id="output" style="display: none;"></div>
-  <button id="copyBtn" onclick="sendToTelegram(data)" style="display: none;">📋 ارسال به تلگرام</button>
+  <button id="sendBtn" onclick="sendToTelegram()" style="display: none;">📋 ارسال به تلگرام</button>
   
   <button id="resetBtn" onclick="resetForm()" style="display: none; background: #f44336;">🗑 پاک کردن</button>
 
 <button onclick="showHistory()" style="background: #2196F3; margin-top: 15px;">📑 تاریخچه فایل ها</button>
+
 
 <!-- پاپ‌آپ تاریخچه فایل‌ها -->
 <div id="historyPopup" style="
@@ -769,20 +769,11 @@ enableScrollOnFocus('km', 'kmHint');
 }
     
 	
-function sendToTelegram(data) {
-  google.script.run
-    .withSuccessHandler((msg) => {
-      alert(msg); // ✅ یا ⚠️ دقیقاً همون چیزی که از code.gs برمی‌گرده
-    })
-    .withFailureHandler((err) => {
-      alert("⚠️ خطا در اجرای اسکریپت: " + err.message);
-    })
-    .sendMessageToTelegram(data);
-}
 
 
 
-function generateText() {
+
+function viewFile() {
   // پاک‌سازی خطاها
   document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
 
@@ -816,11 +807,11 @@ function generateText() {
 
   if (price < 50000000) {
     if (!confirm("⚠️ قیمت واردشده کمتر از ۵۰ میلیون تومان است. آیا از قیمت اطمینان دارید؟")) {
-      return; // متوقف شود اگر کاربر تأیید نکرد
+      return;
     }
   }
 
-  let priceText = price.toLocaleString('fa-IR');
+  const priceText = price.toLocaleString('fa-IR');
 
   const yearSelect = document.getElementById('year');
   const yearFa = yearSelect.selectedOptions[0].textContent;
@@ -835,7 +826,7 @@ function generateText() {
   const features = document.getElementById('features').value;
   const desc = document.getElementById('desc').value;
 
-  const finalText = `🏷️ کد تخفیف: **${code}**
+  const finalText = `🏷 کد تخفیف: **${code}**
 
 📍 ناحیه: **${areaText}**
 
@@ -880,15 +871,32 @@ function generateText() {
   outputDiv.style.border = '2px dashed green';
   outputDiv.style.background = '#e8fbe8';
 
-  const copyBtn = document.getElementById('copyBtn');
-  copyBtn.style.display = 'block';
+ //const copyBtn = document.getElementById('copyBtn');
+  //copyBtn.style.display = 'block';
+  document.getElementById('sendBtn').style.display = 'block';    // نمایش دکمه ارسال
+}
 
-  document.getElementById('resetBtn').style.display = 'block';
-
-  // ذخیره کد تخفیف فقط پس از ایجاد فایل
-  localStorage.setItem('previousCode', code);
 
   // ارسال به تلگرام
+function sendToTelegram() {
+  const code = document.getElementById('code').value;
+  const areaSelect = document.getElementById('area');
+  const areaText = areaSelect.selectedOptions[0].textContent;
+  const car = document.getElementById('brandInput').value;
+  const price = parseInt(document.getElementById('price').value) || 0;
+  const priceText = price.toLocaleString('fa-IR');
+  const yearSelect = document.getElementById('year');
+  const yearFa = yearSelect.selectedOptions[0].textContent;
+  const km = parseInt(document.getElementById('km').value) || 0;
+  const kmWithUnit = km.toLocaleString('fa-IR');
+  const gearbox = document.getElementById('gearbox').value;
+  const color = document.getElementById('color').value;
+  const motor = document.getElementById('motor').value;
+  const body = document.getElementById('body').value;
+  const bimeh = document.getElementById('bimeh').selectedOptions[0].textContent;
+  const features = document.getElementById('features').value;
+  const desc = document.getElementById('desc').value;
+
   const data = {
     code: code,
     areaText: areaText,
@@ -902,10 +910,38 @@ function generateText() {
     body: body,
     bimeh: bimeh,
     features: features,
-    desc: desc
+    desc: desc,
   };
-  sendToTelegram(data);
+
+  const WEB_APP_URL =
+    'https://script.google.com/macros/s/AKfycbyF02w8EOy04XliJ64Q_1bGsZos4rafV2FxpevdLU304bxT9PkgNm0GewxJqUX8evb2/exec';
+
+  fetch(WEB_APP_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    cache: 'no-cache',
+    redirect: 'follow',
+    body: new URLSearchParams(data),
+  })
+    .then((res) => res.text())
+    .then((text) => {
+      try {
+        const data = JSON.parse(text);
+        alert(data.message);
+        // اگر سرور پاسخ موفقیت‌آمیز برگرداند، کد تخفیف را ذخیره کن
+        localStorage.setItem('previousCode', code);
+      } catch (e) {
+        alert('✅ اطلاعات با موفقیت ارسال شد!');
+        // اگر سرور پاسخ معتبری نداد، اما ارسال موفق بوده، کد تخفیف را ذخیره کن
+        localStorage.setItem('previousCode', code);
+      }
+    })
+    .catch((err) => {
+      alert('❌ خطا در ارسال اطلاعات: ' + err.message);
+    });
 }
+
+
 
 
 
@@ -1801,6 +1837,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+
 
   </script>
 </body>
