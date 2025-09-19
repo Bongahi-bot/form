@@ -1,73 +1,1848 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-  <meta charset="UTF-8">
-  <title>فرم ارسال به GAS</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title> فایل ماشین</title>
   <style>
-    body { font-family: Tahoma, sans-serif; margin: 20px; }
-    input, textarea, button { display: block; margin: 8px 0; width: 300px; padding: 6px; }
-    #result { margin-top: 15px; font-weight: bold; }
+    body {
+        
+      font-family: 'Tahoma', sans-serif;
+      direction: rtl;
+      padding: 20px;
+      background: #f4f4f4;
+      max-width: 600px;
+      margin: auto;
+    }
+    
+html {
+  scroll-behavior: smooth;
+}
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+border: 1px solid #ccc;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #4CAF50;
+      background-color: #f0fff0;
+      box-shadow: 0 0 8px #4CAF50AA;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      width: 100%;
+      transition: background 0.3s ease;
+font-weight: bold
+    }
+    button:hover {
+      background: #45a049;
+    }
+    #output {
+      white-space: pre-line;
+      background: #eee;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+      font-family: inherit;
+      user-select: text;
+box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .hint {
+      font-size: 17px;
+      color: #777;
+      margin-top: 5px;
+    }
+    
+    
+.code-container {
+    display: flex;
+    align-items: stretch; 
+    gap: 5px;
+  }
+  .code-container input {
+    flex: 1;
+    font-size: 16px;
+    padding: 8px;
+  }
+  .code-container button {
+    width: 40px;
+    font-size: 20px;
+    font-weight: bold;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+.popup {
+  position: fixed;
+  top: 15vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 500px;
+  padding: 13px;
+  box-sizing: border-box;
+  max-height: calc(var(--vh, 1vh) * 70);
+  overflow-y: auto;
+  background: white;
+  z-index: 9999;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ccc;
+  scrollbar-gutter: stable;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease;
+}
+
+.popup.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.popup.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* نیمه‌تار */
+  backdrop-filter: blur(4px);           /* افکت مات */
+  z-index: 999;                         /* زیر پاپ‌آپ */
+}
+
+
+.popup button {
+  margin: 5px 0;
+  padding: 6px 12px;
+  font-size: 16px;
+  margin-left: 10px;
+  cursor: pointer;
+border-radius: 6px;
+      border: none;
+      transition: background-color 0.3s ease;
+      font-weight: bold;
+}
+
+.popup button.active {
+  background-color: #388e3c;
+  color: ;
+  border: none;
+  font-weight: bold;
+  transform: scale(1.01); /* کمی بزرگ‌تر */
+  box-shadow: 0 0 4px #4caf50aa;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+li {
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background: #eee;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+li:hover {
+  background: #d0f0d0;
+}
+
+
+.features-list {
+  direction: rtl; /* راست‌چین شدن محتوا */
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 5px 40px; /* فاصله ردیف و ستون */
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.features-list label {
+  display: flex;
+  align-items: center; /* تراز عمودی وسط */
+  gap: 6px; /* فاصله بین چک‌باکس و متن */
+  cursor: pointer;
+}
+
+.features-list label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin: 0; /* حذف margin اضافی */
+}
+
+#descPopup .features-list {
+  overflow: visible !important;
+  max-height: none !important;
+}
+.radio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, auto); /* دو ستون با عرض خودکار */
+  gap: 4px 30px; /* فاصله بین ردیف و ستون */
+  
+  margin-top: 8px;
+  direction: rtl; 
+background-color: #f0f0f0;
+
+}
+
+.radio-grid label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+white-space: nowrap; /* جلوگیری از شکست متن */
+  
+}
+
+ .radio-grid input[type="radio"],
+  .radio-grid input[type="checkbox"] {
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    accent-color: #4CAF50;
+  }
+  
+.search-input {
+  width: 100%;
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.popup-header {
+  position: relative;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.popup-header h4 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.back-button {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  cursor: pointer;
+  color: #007bff;
+}
+  
+    input.error, select.error, textarea.error {
+      border: 2px solid red;
+    }
   </style>
 </head>
 <body>
-  <h2>فرم ارسال به Google Apps Script</h2>
+<header style="
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+border-radius: 0px;
+  z-index: 1000;
+  max-width: 600px;
+  margin: auto;
+  user-select: none;
+">
+  <a href="https://t.me/Bongahi_bot" target="_blank" rel="noopener"
+     style="color: #2563eb; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 24px; font-weight: bold;">
+    Bongahi_bot
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram"
+         style="width: 24px; height: 24px;">
+  </a>
+</header>
 
-  <form id="myForm">
-    <input type="text" name="code" placeholder="کد تخفیف" required>
-    <input type="text" name="areaText" placeholder="ناحیه">
-    <input type="text" name="car" placeholder="نام ماشین">
-    <input type="text" name="priceText" placeholder="قیمت">
-    <input type="text" name="yearFa" placeholder="سال تولید">
-    <input type="text" name="kmWithUnit" placeholder="کارکرد">
-    <input type="text" name="gearbox" placeholder="گیربکس">
-    <input type="text" name="color" placeholder="رنگ">
-    <input type="text" name="motor" placeholder="موتور">
-    <input type="text" name="body" placeholder="بدنه">
-    <input type="text" name="bimeh" placeholder="بیمه">
-    <input type="text" name="features" placeholder="امکانات">
-    <textarea name="desc" placeholder="توضیحات"></textarea>
-    <button type="submit">ارسال</button>
-  </form>
+<h2 style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+  فایل ماشین
+   <span id="today-date" style="font-size: 0.6em; color: #888; font-weight: normal; white-space: nowrap;">
+  </span>
+</h2>
+ 
+<label for="code">کد تخفیف:</label>
+<div class="code-container">
+  <input type="text" id="code" placeholder="" />
+  <button type="button" onclick="incrementCode()">➕</button>
+  </div>
+  
+ <label>ناحیه:</label>
+  <select id="area"></select>
+  
+ <label for="brandInput">نام ماشین:</label>
+ <!-- باکس اصلی فقط برای نمایش -->
+<input type="text" id="brandInput" placeholder="برند و مدل را انتخاب کنید..." readonly onclick="openBrandPopup()" />
 
-  <div id="result"></div>
+<!-- پاپ‌آپ انتخاب برند -->
+<div id="popupBrand" class="popup" style="display:none;">
+  <div>
+    <button onclick="showBrandList('irani')">🇮🇷 برندهای ایرانی</button>
+    <button onclick="showBrandList('khareji')">🌍 برندهای خارجی</button>
+  
+  <button onclick="showBrandList('heavy')">🚎 سنگین 🚛</button>
+  
+  </div>
+<input type="text" id="searchBrandInput" class="search-input" placeholder="جستجوی برند، مدل و ...."/>
+  
+  <ul id="brandList"></ul>
+</div>
 
+<!-- پاپ‌آپ انتخاب مدل -->
+<div id="popupModel" class="popup" style="display:none;">
+  <div class="popup-header">
+    <span class="back-button" onclick="backToBrands()">←</span>
+    <h4>مدل‌های موجود</h4>
+  </div>
+
+  <input type="text" id="searchModelInput" class="search-input" placeholder="جستجوی مدل..." />
+  <ul id="modelList"></ul>
+</div>
+
+<!-- پاپ‌آپ انتخاب تیپ -->
+<div id="popupTip" class="popup" style="display:none;">
+  <div class="popup-header">
+    <span class="back-button" onclick="backToModels()">←</span>
+    <h4>انتخاب تیپ</h4>
+  </div>
+  <ul id="tipList"></ul>
+</div>
+  <label>قیمت (تومان):</label>
+  <input
+    type="number"
+    id="price"
+    oninput="updatePriceLabel()"
+  />
+  <div  class="hint" id="priceHint"></div>
+  
+  <label>سال تولید:</label>
+  <select id="year"></select>
+
+  <label>کارکرد (کیلومتر):</label>
+  <input type="number" id="km" oninput="updateKmLabel()" />
+  <div class="hint" id="kmHint"></div>
+<label> گیربکس:</label>
+<select id="gearbox">
+  <option value="دنده‌ای">دنده‌ای</option>
+  <option value="اتوماتیک">اتوماتیک</option>
+</select>
+
+  <label>رنگ:</label>
+  <select id="color">
+    <option value="سفید">سفید</option>
+    <option value="مشکی">مشکی</option>
+  <option value="مشکی متالیک">مشکی متالیک</option>
+  <option value="دلفینی">دلفینی</option>
+    <option value="نقره‌ای">نقره‌ای</option>
+    <option value="آبی">آبی</option>
+ <option value="آبی رویال">آبی رویال</option>
+    <option value="قرمز">قرمز</option>
+    <option value="سبز">سبز</option>
+    <option value="خاکستری">خاکستری</option>
+    <option value="زرد">زرد</option>
+  </select>
+
+  <label>وضعیت موتور:</label>
+  <select id="motor">
+    <option value="سالم">سالم</option>
+    <option value="نیاز به تعمیر">نیاز به تعمیر</option>
+  <option value="تازه تعمیر">تازه تعمیر</option>
+    <option value="تعویض شده">تعویض شده</option>
+  </select>
+
+  <label>وضعیت بدنه:</label>
+  <select id="body">
+    <option value="سالم و بی‌خط و خش">سالم و بی‌خط و خش</option>
+    <option value="خط و خش جزئی">خط و خش جزئی</option>
+   <option value="  رنگ‌شدگی دارد">رنگ‌شدگی دارد</option>
+    <option value="دوررنگ">دوررنگ</option>
+  </select>
+
+  <label>مهلت بیمه ثالث (ماه):</label>
+  <select id="bimeh"></select>
+
+ <label for="features">امکانات:</label>
+<textarea type="text" id="features" placeholder="برای انتخاب کلیک کنید" readonly onclick="openFeaturesPopup()"></textarea>
+<div id="featuresPopup" class="popup" style="display:none;">
+  
+  <div class="features-list">
+ <label>
+      <input type="checkbox" value="----" />
+      ----
+    </label>
+    <label>
+      <input type="checkbox" value="سانروف" />
+      سانروف
+    </label>
+    <label>
+      <input type="checkbox" value="تهویه اتوماتیک" />
+      تهویه اتوماتیک
+    </label>
+    <label>
+      <input type="checkbox" value="صندلی برقی" />
+      صندلی برقی
+    </label>
+    <label>
+      <input type="checkbox" value="سنسور دنده عقب" />
+      سنسور دنده عقب
+    </label>
+    
+ <label>
+      <input type="checkbox" value="دزدگیر" />
+      دزدگیر
+    </label>
+    <label>
+      <input type="checkbox" value="کروز کنترل" />
+      کروز کنترل
+    </label>
+    <label>
+      <input type="checkbox" value="فرمان برقی" />
+      فرمان برقی
+    </label>
+    <label>
+      <input type="checkbox" value="مانیتور" />
+      مانیتور
+    </label>
+    
+  <label>
+   <input type="checkbox" value="سقف پانوراما"/>
+       سقف پانوراما
+    </label>
+
+    <label>
+      <input type="checkbox" value="استارت دکمه‌ای" />
+      استارت دکمه‌ای
+    </label>
+    <label>
+      <input type="checkbox" value="دوربین عقب" />
+      دوربین عقب
+    </label>
+  <label>
+      <input type="checkbox" value="دوربین 360" />
+      دوربین 360  </label>
+<label>
+  <input type="checkbox" value="شیشه دودی" />
+  شیشه دودی
+</label>
+
+<label>
+  <input type="checkbox" value="دی‌لایت" />
+  دی‌لایت
+</label>
+    
+  </div>
+  <button onclick="confirmFeatures()">تأیید</button>
+</div>
+
+
+<label for="desc">سایر توضیحات:</label>
+<textarea type="text" id="desc" placeholder="برای انتخاب کلیک کنید" readonly onclick="openDescPopup()"></textarea>
+
+<div id="descPopup" class="popup" style="display:none;">
+  <div class="features-list" style="grid-template-columns: 1fr;">
+  
+  <label>
+      <input type="checkbox" value="----" /> ----
+    </label>
+    <label>
+      <input type="checkbox" value="قیمت مقطوع" /> قیمت مقطوع
+    </label>
+    
+<label>
+      <input type="checkbox" value="فروش فقط نقدی " /> فروش فقط نقدی  </label>
+      
+    <label><input type="checkbox" value="مایل به معاوضه "/> مایل به معاوضه </label>
+    
+<label>
+      <input type="checkbox" value="فروش به صورت حواله "/> فروش به صورت حواله </label>
+      
+
+ <label>
+      <input type="checkbox" value="گارانتی فعال" /> گارانتی فعال
+    </label>
+   
+ <label>
+      <input type="checkbox" value="موتور تعویض قانونی " /> موتور تعویض قانونی </label>
+    
+<label>
+  <input type="checkbox" value="بیمه بدنه دارد"  />
+  بیمه بدنه دارد
+</label>
+    <label><input type="checkbox" value="تک برگ سند"/> تک برگ سند </label>
+    
+
+<label>
+  <input type="checkbox" id="consumableToggle" value="مصرفی‌های تازه تعویض شده" onchange="toggleConsumables()" />
+  مصرفی‌های تازه تعویض شده
+</label>
+
+<!-- بخش رادیویی که مخفی است -->
+<div id="consumablesRadios" class="radio-grid" style="display: none;">
+    
+<label><input type="checkbox" name="consumableItem" value="روغن موتور" /> روغن موتور</label>
+
+<label><input type="checkbox" name="consumableItem" value="روغن گیربکس" /> روغن گیربکس</label>
+
+  <label><input type="checkbox" name="consumableItem" value="باتری" /> باتری</label>
+  <label><input type="checkbox" name="consumableItem" value="شمع" /> شمع</label>
+  <label><input type="checkbox" name="consumableItem" value="وایر شمع" /> وایر شمع</label>
+  <label><input type="checkbox" name="consumableItem" value="تسمه تایم" /> تسمه تایم</label>
+<label><input type="checkbox" name="consumableItem" value="تسمه دینام" /> تسمه دینام</label>
+<label><input type="checkbox" name="consumableItem" value="لنت" /> لنت</label>
+<label><input type="checkbox" name="consumableItem" value="دیسک و صفحه کلاچ "> دیسک و صفحه کلاچ</label>
+  <label><input type="checkbox" name="consumableItem" value="سیم کلاچ" /> سیم کلاچ</label>
+  <label><input type="checkbox" name="consumableItem" value="رادیاتور" /> رادیاتور</label>
+</div>
+ 
+    
+  <label>
+  <input type="checkbox" id="dualToggle" value="دوگانه " onchange="toggleDualType()" />
+  دوگانه 
+</label>
+<div id="dualTypeRadios" class="radio-grid" style="display: none;">
+  <label><input type="radio" name="dualType" value="دستی"/>دستی</label>
+  <label><input type="radio" name="dualType" value="فابریک"/>فابریک</label>
+</div>
+<label>
+  <input type="checkbox" id="taxiToggle" value="تاکسی " onchange="toggleTaxiType()" />
+  تاکسی 
+</label>
+<div id="taxiTypeRadios" class="radio-grid" style="display: none;">
+  <label><input type="radio" name="taxiType" value="درون‌شهری" />درون‌شهری</label>
+  <label><input type="radio" name="taxiType" value="برون‌شهری" />برون‌شهری</label>
+</div>
+
+<label>
+  <input type="checkbox" id="rangToggle" value="وضعیت رنگ‌شدگی" onchange="toggleRangType()" />
+  وضعیت رنگ‌شدگی
+</label>
+
+<div id="rangTypeRadios" class="radio-grid" style="display: none;">
+  
+
+<label><input type="checkbox" name="rang" value="گلگیر جلو چپ" /> گلگیر جلو چپ</label>
+<label><input type="checkbox" name="rang" value="گلگیر جلو راست" /> گلگیر جلو راست</label>
+<label><input type="checkbox" name="rang" value="گلگیر عقب چپ" /> گلگیر عقب چپ</label>
+<label><input type="checkbox" name="rang" value="گلگیر عقب راست" /> گلگیر عقب راست</label>
+ <label><input type="checkbox" name="rang" value="درب جلو چپ"> درب جلو چپ</label>
+  <label><input type="checkbox" name="rang" value="درب جلو راست"> درب جلو راست</label>
+  <label><input type="checkbox" name="rang" value="درب عقب چپ"> درب عقب چپ</label>
+  <label><input type="checkbox" name="rang" value="درب عقب راست"> درب عقب راست</label>
+<label><input type="checkbox" name="rang" value="کاپوت" /> کاپوت</label>
+<label><input type="checkbox" name="rang" value="سقف" /> سقف</label>
+<label><input type="checkbox" name="rang" value="صندوق عقب" /> صندوق عقب</label>
+</div>
+
+<label>
+  <input type="checkbox" id="shassiToggle" value="وضعیت شاسی" onchange="toggleShassiType()" />
+  وضعیت شاسی
+</label>
+
+<div id="shassiTypeRadios" class="radio-grid" style="display: none;">
+<label><input type="checkbox" name="shassi" value="سالم" /> سالم</label>
+<label><input type="checkbox" name="shassi" value="ضربه جزئی جلو" /> ضربه جزئی جلو</label>
+<label><input type="checkbox" name="shassi" value="ضربه جزئی عقب" /> ضربه جزئی عقب</label>
+<label><input type="checkbox" name="shassi" value="جوشکاری جلو" /> جوشکاری جلو</label>
+<label><input type="checkbox" name="shassi" value="جوشکاری عقب" /> جوشکاری عقب</label>
+<label><input type="checkbox" name="shassi" value="شاسی‌کشی شده" /> شاسی‌کشی شده</label>
+</div>
+
+ </div>
+  <button onclick="confirmDesc()">تأیید</button>
+</div>
+
+  <button onclick="viewFile()">📄 مشاهده فایل</button>
+  <div id="output" style="display: none;"></div>
+  <button id="sendBtn" onclick="sendToTelegram()" style="display: none;">📋 ارسال به تلگرام</button>
+  
+  <button id="resetBtn" onclick="resetForm()" style="display: none; background: #f44336;">🗑 پاک کردن</button>
+
+<button onclick="showHistory()" style="background: #2196F3; margin-top: 15px;">📑 تاریخچه فایل ها</button>
+
+
+<!-- پاپ‌آپ تاریخچه فایل‌ها -->
+<div id="historyPopup" style="
+  display: none;
+  position: fixed;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 80%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0;
+  z-index: 10000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  flex-direction: column;
+">
+  <div style="padding: 15px; overflow-y: auto; flex-grow: 1;">
+    
+    <ul id="historyList" style="list-style: none; padding: 0;"></ul>
+  </div>
+  <div style="padding: 10px; border-top: 1px solid #ccc; text-align: center;">
+    <button onclick="document.getElementById('historyPopup').style.display='none'" style="
+      padding: 8px 16px;
+      background: #888;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 17px;
+      cursor: pointer;
+    ">❌ بستن</button>
+  </div>
+</div>
+
+<!-- پاپ‌آپ نمایش جزئیات فایل -->
+<div id="detailsPopup" style="display:none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%);
+  background: white; padding: 20px; width: 80%; max-height: 70%; overflow-y: auto;
+  border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 10001;">
+  <pre id="detailsText" style="white-space: pre-wrap; font-family: inherit;"></pre>
+ <div style="display: flex; justify-content: center; gap: 12px; margin-top: 15px;">
+     
+     <!--
+  <button onclick="applyDetailsEdit()" style="background: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 6px; font-size: 15px;">✏ ویرایش</button>
+  
+  -->
+  
+  <button onclick="document.getElementById('detailsPopup').style.display='none'" style="background: #888; padding: 8px 16px; border: none; border-radius: 6px; font-size: 17px;">  ❌ بستن  </button>
+</div>
+</div>
+
+<!-- لایه نیمه‌شفاف پشت پاپ‌آپ -->
+<div id="popupOverlay" class="popup-overlay" style="display: none;"></div>
+  
   <script>
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbyF02w8EOy04XliJ64Q_1bGsZos4rafV2FxpevdLU304bxT9PkgNm0GewxJqUX8evb2/exec"; // لینک Web App منتشر شده
+  
+const today = new Date();
+  const days = ["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"];
+  const persianDate = today.toLocaleDateString('fa-IR');
+  document.getElementById("today-date").textContent = `(امروز: ${days[today.getDay()]} ${persianDate})`;
+  
+  // ست کردن vh واقعی برای حل مشکل موبایل
+  function setRealVh() {
+    document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
+  }
+  window.addEventListener('resize', setRealVh);
+  window.addEventListener('load', setRealVh);
 
-    document.getElementById("myForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const params = new URLSearchParams(formData);
+const areaSelect = document.getElementById('area');
+    for (let i = 1; i <= 12; i++) {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = i.toLocaleString('fa-IR') ;
+      areaSelect.appendChild(option);
+    }
 
-      const resultDiv = document.getElementById("result");
-      resultDiv.style.color = "black";
-      resultDiv.innerText = "در حال ارسال...";
 
+    const yearSelect = document.getElementById('year');
+    for (let i = 1404; i >= 1350; i--) {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = i.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+      yearSelect.appendChild(option);
+    }
+
+    const bimehSelect = document.getElementById('bimeh');
+    for (let i = 1; i <= 12; i++) {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = i.toLocaleString('fa-IR') ;
+      bimehSelect.appendChild(option);
+    }
+
+    function updatePriceLabel() {
+      const price = document.getElementById('price').value;
+      const hint = document.getElementById('priceHint');
+      hint.textContent = price ? `${parseInt(price).toLocaleString('fa-IR')} تومان` : '';
+    }
+
+    function updateKmLabel() {
+      const km = document.getElementById('km').value;
+      const hint = document.getElementById('kmHint');
+      hint.textContent = km ? `${parseInt(km).toLocaleString('fa-IR')} کیلومتر` : '';
+    }
+    
+function enableScrollOnFocus(inputId, hintId) {
+  const input = document.getElementById(inputId);
+  const hint = document.getElementById(hintId);
+
+  input.addEventListener('focus', () => {
+    setTimeout(() => {
+      hint.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+  });
+}
+
+// اعمال برای فیلدهای مورد نظر
+enableScrollOnFocus('price', 'priceHint');
+enableScrollOnFocus('km', 'kmHint');
+
+    function generateHashtags(car, year, areaText) {
+  function normalize(str) {
+    return str.replace(/[^\u0600-\u06FFa-zA-Z0-9]/g, '').replace(/\s+/g, '').toLowerCase();
+  }
+
+  const parts = car.trim().split(/\s*-\s*/); // شکستن به بخش‌ها با "-"
+  const brandTrimmed = parts[0]?.trim() || '';
+  const modelTrimmed = parts[1]?.trim() || '';
+  const tipTrimmed = parts[2]?.trim() || '';
+
+  const cleanBrand = normalize(brandTrimmed);
+  const isForeign = brands['khareji'].some(b => normalize(b) === cleanBrand);
+
+  let name = '';
+
+  if (modelTrimmed && !normalize(modelTrimmed).startsWith(cleanBrand)) {
+    name = `${brandTrimmed}_${modelTrimmed}`;
+  } else if (modelTrimmed) {
+    name = modelTrimmed;
+  } else {
+    name = brandTrimmed;
+  }
+
+  if (tipTrimmed) {
+    name += `_${tipTrimmed}`;
+  }
+
+  // تعیین بخش سال
+  let yearTag;
+  if (!isForeign) {
+    if (year >= 1400) {
+      yearTag = 'بعداز۱۴۰۰';
+    } else {
+      const decade = Math.floor(year / 10) * 10;
+      const decadeFa = String(decade).slice(-2).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+      yearTag = `دهه${decadeFa}`;
+    }
+  } else {
+    yearTag = year >= 2010 ? 'بعداز2010' : 'قبل‌از2010';
+  }
+
+  const mainHashtag = `#${name.replace(/\s+/g, '_')}_${yearTag}`;
+  const areaHashtag = `#ناحیه${areaText.replace(/\s/g, '')}`;
+
+  return [mainHashtag, areaHashtag];
+}
+    
+	
+
+
+
+
+function viewFile() {
+  // پاک‌سازی خطاها
+  document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
+
+  // چک کردن فیلدهای الزامی
+  const requiredFields = [
+    'code', 'area', 'brandInput', 'price', 'year', 'km','gearbox',
+    'color', 'motor', 'body', 'bimeh', 'features', 'desc'
+  ];
+
+  let hasError = false;
+
+  requiredFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value || el.value.trim() === "") {
+      el.classList.add('error');
+      hasError = true;
+    }
+  });
+
+  if (hasError) {
+    alert("لطفاً همه فیلدها را کامل پر کنید ❌");
+    return;
+  }
+
+  const code = document.getElementById('code').value;
+  const areaSelect = document.getElementById('area');
+  const areaText = areaSelect.selectedOptions[0].textContent;
+
+  const car = document.getElementById('brandInput').value;
+  let price = parseInt(document.getElementById('price').value) || 0;
+
+  if (price < 50000000) {
+    if (!confirm("⚠️ قیمت واردشده کمتر از ۵۰ میلیون تومان است. آیا از قیمت اطمینان دارید؟")) {
+      return;
+    }
+  }
+
+  const priceText = price.toLocaleString('fa-IR');
+
+  const yearSelect = document.getElementById('year');
+  const yearFa = yearSelect.selectedOptions[0].textContent;
+  const yearEn = parseInt(yearSelect.value);
+  const km = parseInt(document.getElementById('km').value) || 0;
+  const kmWithUnit = km.toLocaleString('fa-IR');
+  const gearbox = document.getElementById('gearbox').value;
+  const color = document.getElementById('color').value;
+  const motor = document.getElementById('motor').value;
+  const body = document.getElementById('body').value;
+  const bimeh = document.getElementById('bimeh').selectedOptions[0].textContent;
+  const features = document.getElementById('features').value;
+  const desc = document.getElementById('desc').value;
+
+  const finalText = `🏷 کد تخفیف: **${code}**
+
+📍 ناحیه: **${areaText}**
+
+🚗 نام ماشین: **${car}**
+
+💰 قیمت (تومان): **${priceText}**
+
+📆 سال تولید: **${yearFa}**
+
+⏳ کارکرد (کیلومتر): **${kmWithUnit}**
+
+⚙️ گیربکس: **${gearbox}**
+
+🎨 رنگ: **${color}**
+
+🔧 وضعیت موتور: **${motor}**
+
+🛡 وضعیت بدنه: **${body}**
+
+📄 مهلت بیمه ثالث (ماه): **${bimeh}**
+
+✨ امکانات: **${features}**
+
+📝 سایر توضیحات: **${desc}**
+
+@Bongahi_bot`;
+
+  // ذخیره در تاریخچه
+  let history = JSON.parse(localStorage.getItem('fileHistory')) || [];
+  history = history.filter(item => item.code !== code);
+  history.unshift({
+    code: code,
+    text: finalText
+  });
+  if (history.length > 10) history = history.slice(0, 10);
+  localStorage.setItem('fileHistory', JSON.stringify(history));
+
+  // نمایش خروجی
+  const outputDiv = document.getElementById('output');
+  outputDiv.innerText = finalText;
+  outputDiv.style.display = 'block';
+  outputDiv.style.border = '2px dashed green';
+  outputDiv.style.background = '#e8fbe8';
+
+ //const copyBtn = document.getElementById('copyBtn');
+  //copyBtn.style.display = 'block';
+  document.getElementById('sendBtn').style.display = 'block';    // نمایش دکمه ارسال
+  document.getElementById('resetBtn').style.display = 'block';
+}
+
+
+  // ارسال به تلگرام
+function sendToTelegram() {
+  const code = document.getElementById('code').value;
+  const areaSelect = document.getElementById('area');
+  const areaText = areaSelect.selectedOptions[0].textContent;
+  const car = document.getElementById('brandInput').value;
+  const price = parseInt(document.getElementById('price').value) || 0;
+  const priceText = price.toLocaleString('fa-IR');
+  const yearSelect = document.getElementById('year');
+  const yearFa = yearSelect.selectedOptions[0].textContent;
+  const km = parseInt(document.getElementById('km').value) || 0;
+  const kmWithUnit = km.toLocaleString('fa-IR');
+  const gearbox = document.getElementById('gearbox').value;
+  const color = document.getElementById('color').value;
+  const motor = document.getElementById('motor').value;
+  const body = document.getElementById('body').value;
+  const bimeh = document.getElementById('bimeh').selectedOptions[0].textContent;
+  const features = document.getElementById('features').value;
+  const desc = document.getElementById('desc').value;
+
+  const data = {
+    code: code,
+    areaText: areaText,
+    car: car,
+    priceText: priceText,
+    yearFa: yearFa,
+    kmWithUnit: kmWithUnit,
+    gearbox: gearbox,
+    color: color,
+    motor: motor,
+    body: body,
+    bimeh: bimeh,
+    features: features,
+    desc: desc,
+  };
+
+  const WEB_APP_URL =
+    'https://script.google.com/macros/s/AKfycbytl4DbO1SZZ2yjzWo9ek9nPX0r9vIJ1siFgZZ4Kc1ayXdmxDfHFmOlznXanyAT1zlw/exec';
+
+  fetch(WEB_APP_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    cache: 'no-cache',
+    redirect: 'follow',
+    body: new URLSearchParams(data),
+  })
+    .then((res) => res.text())
+    .then((text) => {
       try {
-        const response = await fetch(webAppUrl, {
-          method: "POST",
-          body: params
-        });
-
-        if (!response.ok) {
-          throw new Error(`خطای اتصال به سرور (${response.status})`);
-        }
-
-        const result = await response.json();
-
-        if (result.status === "success") {
-          resultDiv.style.color = "green";
-          resultDiv.innerText = result.message;
-        } else {
-          resultDiv.style.color = "red";
-          resultDiv.innerText = result.message || "خطا در ارسال فرم";
-        }
-
-      } catch(err) {
-        resultDiv.style.color = "red";
-        resultDiv.innerText = "خطا: " + err.message + "\n🔹 لطفاً مطمئن شوید که لینک Web App صحیح است و دسترسی Anyone, even anonymous فعال است.";
+        const data = JSON.parse(text);
+        alert(data.message);
+        // اگر سرور پاسخ موفقیت‌آمیز برگرداند، کد تخفیف را ذخیره کن
+        localStorage.setItem('previousCode', code);
+      } catch (e) {
+        alert('✅ اطلاعات با موفقیت ارسال شد!');
+        // اگر سرور پاسخ معتبری نداد، اما ارسال موفق بوده، کد تخفیف را ذخیره کن
+        localStorage.setItem('previousCode', code);
       }
+    })
+    .catch((err) => {
+      alert('❌ خطا در ارسال اطلاعات: ' + err.message);
     });
+}
+
+
+
+
+
+    window.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('code');
+  const previousCode = localStorage.getItem('previousCode');
+  
+  // فقط اگر previousCode وجود دارد، placeholder را تنظیم کن
+  if (previousCode && previousCode.startsWith("C-")) {
+    input.placeholder = `کد تخفیف قبلی: ${previousCode}`;
+  }
+});
+
+   document.getElementById('code').addEventListener('focus', function () {
+  if (!this.value) {
+    const previousCode = localStorage.getItem('previousCode');
+    if (previousCode) {
+      this.value = previousCode;
+    }
+  }
+});
+
+    // تابع افزایش عدد آخر کد تخفیف با بررسی درست مقدار رشته
+    function incrementCode() {
+      const input = document.getElementById("code");
+      let value = input.value.trim();
+
+    //  if (!value) {
+   //     value = localStorage.getItem("previousCode") || "";
+      //  if (value) input.value = value;
+    //  }
+
+      const match = input.value.match(/^C-(\d+)-(\d+)-(\d+)$/);
+      if (match) {
+        const part1 = match[1];
+        const part2 = match[2];
+        let part3 = parseInt(match[3], 10);
+        part3++;
+        const newCode = `C-${part1}-${part2}-${part3}`;
+        input.value = newCode;
+        
+    input.classList.remove('error');
+      } else {
+        alert("فرمت کد تخفیف باید مانند C-2345-1-2 باشد.");
+      }
+    }
+
+    function resetForm() {
+  // پاک کردن مقدار فیلدها
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+
+  // پنهان کردن خروجی و دکمه‌ها
+  document.getElementById('output').style.display = 'none';
+  document.getElementById('output').innerText = '';
+  document.getElementById('sendBtn').style.display = 'none';
+  document.getElementById('resetBtn').style.display = 'none';
+
+  // حذف کلاس‌های خطا
+  document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
+
+  // پاک کردن متن‌های کمکی
+  document.getElementById('priceHint').innerText = '';
+  document.getElementById('kmHint').innerText = '';
+
+  // بازنویسی placeholder کد تخفیف (در صورت وجود)
+  const input = document.getElementById('code');
+  const previousCode = localStorage.getItem('previousCode');
+  if (previousCode) {
+    input.placeholder = `کد تخفیف قبلی: ${previousCode}`;
+  }
+  
+document.querySelectorAll('#featuresPopup input, #descPopup input').forEach(el => el.checked = false);
+}
+
+
+function removeErrorOnInput(id) {
+  const el = document.getElementById(id);
+  el.addEventListener('input', function () {
+    if (el.value && el.classList.contains('error')) {
+      el.classList.remove('error');
+    }
+  });
+}
+
+const brandInput = document.getElementById('brandInput');
+const searchBrandInput = document.getElementById('searchBrandInput');
+const searchModelInput = document.getElementById('searchModelInput');
+
+let firstClickDone = false;
+
+brandInput.addEventListener('click', openBrandPopup);
+
+searchBrandInput.addEventListener('input', () => {
+  showAllBrandsAndModelsFiltered(searchBrandInput.value.trim());
+});
+searchModelInput.addEventListener('input', () => {
+  if (currentlySelectedBrand) {
+    showModelPopup(currentlySelectedBrand, searchModelInput.value.trim());
+  }
+});
+
+let currentlySelectedBrand = null;
+
+const brands = {
+ irani : ['آریا', 'پراید', 'پژو', 'تارا', 'تیبا', 'دنا', 'رانا', 'ساینا', 'سایپا', 'سمند', 'شاهین', 'کوییک', 'کی ام سی','لاماری', 'وانت'],
+  
+  khareji: ['ام جی', 'ام وی ام', 'برلیانس', 'بنز', 'بی‌ام‌و', 'تویوتا', 'جک', 'جیلی', 'چری', 'رنو', 'سیتروئن', 'شورولت', 'فورد', 'فونیکس', 'کیا', 'لیفان', 'میتسوبیشی', 'نیسان', 'هایما', 'هیوندای', 'ولوو']
+  
+};
+
+// مدل‌های مربوط به هر برند
+const models = {
+
+'پژو': [' ۲۰۶', ' ۲۰۶ SD' ,' ۲۰۷', ' ۴۰۵', ' پارس', 'ROA' ,'  RD' ,'۲۰۰۸', '۵۰۸'],
+
+ 'پراید': ['۱۳۱', ' ۱۱۱', '۱۳۲','۱۴۱', 'glx', 'صبا'],
+  
+  'برلیانس': ['H330','H320','H230','H220','V5','کراس'],
+  
+'سمند': ['LX', 'X7','سورن','سریر'],
+ 
+  'رانا': ['LX', 'پلاس'],
+  'دنا': ['معمولی', 'پلاس'],
+  'تارا': ['پلاس', 'V1', 'V2'],
+  'آریا': ['کراس'],
+  'کوییک': ['معمولی', 'R', 'S', 'GX'],
+  'شاهین': ['G'],
+'تیبا': ['1', '2'],
+'ساینا': ['EX', 'GX','SX','S', 'پلاس'],
+
+'سایپا':['اطلس G'],
+'کی ام سی': ['J7', 'K7', 'X5', 'T8', 'T8 PRO'],
+'لاماری': ['ایما', 'ایما هیبرید'],
+'وانت':['زامیاد','پیکان','آریسان','پراید ۱۵۱','رنو تندر90','مزدا'],
+
+  'بنز': ['C200', 'E240', 'S500', 'GLK', 'CLA', 'CLS', 'SLK'],
+  'بی‌ام‌و': ['سری ۳', 'سری ۵', 'سری ۷', 'X1', 'X3', 'X5', 'i8'],
+  'تویوتا': ['کرولا', 'یاریس', 'کمری', 'راوفور', 'پرادو', 'لندکروزر', 'هایلوکس', 'اف‌جی کروزر'],
+  'هیوندای': ['سوناتا', 'النترا', 'توسان', 'سانتافه', 'آزرا', 'i20', 'i30'],
+  'کیا': ['سراتو', 'اپتیما', 'سورنتو', 'اسپورتیج', 'ریو', 'پیکانتو', 'موهاوی'],
+ 'رنو': ['رنو تندر ۹۰'],
+  'نیسان': ['ماکسیما', 'تیانا', 'قشقایی', 'ایکس‌تریل', 'پاترول', 'جوک', 'رونیز'],
+  'میتسوبیشی': ['لنسر', 'اوتلندر', 'پاجرو', 'ASX'],
+  
+  'ام وی ام': ['110', '110s', '315', '530', '550', 'X22', 'X22 Pro', 'X33', 'X33s', 'X55', 'X55 Pro', 'X65'],
+  'چری': ['آریزو ۵', 'آریزو ۶', 'تیگو ۵', 'تیگو ۷', 'تیگو ۸'],
+  
+'فونیکس': ['FX' ,'آریزو ۶', 'آریزو ۸','تیگو ۷ Pro', 'تیگو ۸ Pro'],
+  'جک': ['J3', 'J4', 'J5', 'S3', 'S5', 'J7'],
+  'لیفان': ['X50', 'X60', '620', '820'],
+  'ام جی': ['MG3', 'MG6', 'MG350', 'MG GS', 'MG RX5'],
+  'سیتروئن': ['C3', 'C5', 'زانتیا'],
+  'ولوو': ['S60', 'S80', 'XC60', 'XC90'],
+  'فورد': ['موستانگ', 'فیستا', 'فیوژن', 'اسکیپ'],
+  'شورولت': ['کاپریس', 'اپترا', 'آوانتا'],
+  'جیلی': ['امگرند 7', 'امگرند X7'],
+'هایما': ['S5', 'S5 پلاس', 'S5 پرو', 'S7', 'S7 توربوشارژ', 'S7 پلاس', '8S', '7X']
+};
+
+// تیپ‌ها برای برخی مدل‌های خاص
+const modelsWithTip = {
+  ' ۲۰۶': ['تیپ ۲', 'تیپ ۳', 'تیپ ۵'],
+  
+ ' ۲۰۷': ['TU5', 'TU3'],
+ 
+' LX':['EF7','ساده'],
+
+' سورن': ['ELX', 'توربو','پلاس','ساده'],
+   ' پارس': ['XU7P', 'XU7','ELX','TU5', 'سال'],
+  'دنا پلاس': ['معمولی', 'توربو', 'توربو شارژ اتومات'],
+  'رنو تندر ۹۰': ['E0','E1', 'E2', 'پلاس'],
+  
+'تیبا 1': ['EX', 'SX', 'پلاس'],
+  'تیبا 2': ['EX', 'SX', 'پلاس'],
+'مزدا': ['تک کابین','دو کابین'],
+
+'زامیاد': [' Z24', ' دیزلی', 'پادرا', 'پادرا پلاس', 'کارون'],
+'110': ['سه سیلندر', 'چهار سیلندر'],
+'315': ['هاچ‌بک', 'هاچ‌بک پلاس', 'صندوق‌دار'],
+'X22': ['ساده', 'اسپرت', 'لاکچری'],
+'X33s': ['ساده', 'اسپرت', 'نیوفیس'],
+'X55': ['اکسلنت', 'اکسلنت اسپرت'],
+'X55 Pro': ['اکسلنت', 'IE'],
+  'FX': ['معمولی','برقی','Premium'],
+  
+    'آریزو ۶': ['Pro', 'GT'],
+    'تیگو ۷ Pro':['معمولی','ePlus','Premium', 'Max'],
+    'تیگو ۸ Pro': ['معمولی','ePlus','Max IE', 'Max'],
+'سراتو': ['1600cc', '2000cc','سایپا'],
+'اپتیما': ['EX', 'GTLine', 'هیبرید'],
+'سورنتو': ['GTLine', 'ساده'],
+'اسپورتیج': ['2000cc', '2400cc', 'GT-Line', 'توربو'],
+'کرولا': ['GLi', 'XLi', 'هیبرید', 'کراس‌هیبرید', 'توربو', 'کلاسیک'],
+'یاریس': ['هاچ‌بک', 'صندوق‌دار'],
+
+'کمری': ['GL', 'GLX', 'XLI', 'SE', 'گرند', 'هیبرید'],
+'پرادو': ['VX', 'TX', 'GX', 'آنرود', 'آفرود'],
+'لندکروزر': ['۶ سیلندر', '۸ سیلندر'],
+'راوفور': ['تک دیفرانسیل', 'دو دیفرانسیل'],
+'سوناتا': ['GL', 'GLS', 'GLS Plus', 'YF', 'LF', 'NF'],
+'النترا': ['1600cc', '1800cc', '2000cc'],
+'آزرا': ['IG', 'HG', 'TG'],
+'سانتافه': ['2400cc', '2700cc', '3300cc', 'GDi'],
+'توسان': ['2000cc', '2400cc', '2700cc']
+
+};
+
+
+
+function openBrandPopup() {
+  openPopup('popupBrand');
+  document.getElementById('popupModel').style.display = 'none';
+  showBrandList('irani');
+}
+
+function setYearOptions(isForeign) {
+  const yearSelect = document.getElementById('year');
+  yearSelect.innerHTML = '';
+
+  if (isForeign) {
+    for (let y = 2025; y >= 1980; y--) {
+      const option = document.createElement('option');
+      option.value = y;
+      option.textContent = y.toString();
+      yearSelect.appendChild(option);
+    }
+  } else {
+    for (let y = 1404; y >= 1350; y--) {
+      const option = document.createElement('option');
+      option.value = y;
+      option.textContent = y.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+      yearSelect.appendChild(option);
+    }
+  }
+}
+
+
+function showBrandList(type, filter = '') {
+  const list = document.getElementById('brandList');
+  list.innerHTML = '';
+
+document.getElementById('popupOverlay').style.display = 'block';
+
+  // دکمه‌ها رو پیدا کن و کلاس active رو حذف کن
+  const buttons = document.querySelectorAll('#popupBrand button');
+  buttons.forEach(btn => btn.classList.remove('active'));
+
+  // دکمه مربوط به نوع انتخاب‌شده رو active کن
+  const activeBtn = document.querySelector(`#popupBrand button[onclick="showBrandList('${type}')"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  const filteredBrands = brands[type].filter(brand => brand.includes(filter));
+
+  filteredBrands.forEach(brand => {
+    const li = document.createElement('li');
+    li.textContent = brand;
+    li.onclick = () => {
+currentlySelectedBrand = brand;
+  const popupBrand = document.getElementById('popupBrand');
+popupBrand.classList.add('hidden');
+setTimeout(() => {
+  popupBrand.style.display = 'none';
+  popupBrand.classList.remove('hidden');
+}, 300);
+  showModelPopup(brand, '', false); // بدون جستجو
+  
+searchBrandInput.value = '';
+};
+    list.appendChild(li);
+  });
+}
+function showAllBrandsAndModelsFiltered(filter = '') {
+  const list = document.getElementById('brandList');
+  list.innerHTML = '';
+
+  const normalizedFilter = normalize(filter);
+  
+  for (const brandType in brands) {
+    brands[brandType].forEach(brand => {
+      const allModels = models[brand] || [];
+
+      allModels.forEach(model => {
+        const fullText = `${brand} ${model}`;
+        if (normalize(fullText).includes(normalizedFilter) || normalize(brand).includes(normalizedFilter) || normalize(model).includes(normalizedFilter)) {
+          const li = document.createElement('li');
+          li.textContent = `${brand} - ${model}`;
+          li.onclick = () => {
+currentlySelectedBrand = brand;
+            const fullModel = `${brand} - ${model}`;
+            
+
+            const isForeign = brands['khareji'].some(b => normalize(b) === normalize(brand));
+            setYearOptions(isForeign);
+
+            if (modelsWithTip[model]) {
+  closePopup();
+  setTimeout(() => showTipPopup(fullModel, model), 300);
+            } else {
+              document.getElementById('brandInput').value = fullModel;
+              const popupBrand = document.getElementById('popupBrand');
+popupBrand.classList.add('hidden');
+setTimeout(() => {
+  popupBrand.style.display = 'none';
+  popupBrand.classList.remove('hidden');
+}, 300);
+
+const popupModel = document.getElementById('popupModel');
+popupModel.classList.add('hidden');
+setTimeout(() => {
+  popupModel.style.display = 'none';
+  popupModel.classList.remove('hidden');
+}, 300);
+
+const popupTip = document.getElementById('popupTip');
+popupTip.classList.add('hidden');
+setTimeout(() => {
+  popupTip.style.display = 'none';
+  popupTip.classList.remove('hidden');
+}, 300);
+document.getElementById('popupOverlay').style.display = 'none';
+            }
+searchBrandInput.value = '';
+          };
+          list.appendChild(li);
+        }
+      });
+    });
+  }
+// اسکرول به popup برند
+setTimeout(() => {
+  const popup = document.getElementById('popupBrand');
+  if (popup) popup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}, 100);
+}
+function normalize(str) {
+  return str.replace(/[‌\s]/g, '').replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d).toString()).toLowerCase();
+}
+
+function showModelPopup(brand, filter = '', showSearch = true) {
+  currentlySelectedBrand = brand;
+  const list = document.getElementById('modelList');
+  list.innerHTML = '';
+
+  document.getElementById('popupTip').style.display = 'none';
+  openPopup('popupModel');
+
+
+  const modelSearchInput = document.getElementById('searchModelInput');
+  if (modelSearchInput) {
+    modelSearchInput.style.display = showSearch ? 'block' : 'none';
+  }
+
+  const normalizedFilter = normalize(filter);
+  const filteredModels = models[brand].filter(model => normalize(model).includes(normalizedFilter));
+  
+  filteredModels.forEach(model => {
+    const li = document.createElement('li');
+    li.textContent = model;
+    li.onclick = () => {
+      const fullModel = brand + ' - ' + model;
+
+      // تشخیص برند خارجی یا ایرانی:
+      const cleanBrand = normalize(brand);
+      const isForeign = brands['khareji'].some(b => normalize(b) === cleanBrand);
+      
+      setYearOptions(isForeign);
+
+      if (modelsWithTip[model]) {
+        document.getElementById('popupModel').style.display = 'none';
+        showTipPopup(fullModel, model);
+      } else {
+        document.getElementById('brandInput').value = fullModel;
+        const popupModel = document.getElementById('popupModel');
+popupModel.classList.add('hidden');
+setTimeout(() => {
+  popupModel.style.display = 'none';
+  popupModel.classList.remove('hidden');
+}, 300);
+document.getElementById('popupOverlay').style.display = 'none';
+      }
+    };
+    list.appendChild(li);
+  });
+
+  // اضافه کردن رویداد کلیک به دکمه بازگشت
+  const backButton = document.querySelector('.back-button'); // فرض بر این است که دکمه بازگشت دارای کلاس back-button است
+  if (backButton) {
+    backButton.addEventListener('click', function(event) {
+      event.stopPropagation(); // جلوگیری از انتشار رویداد کلیک به والدین
+      backToBrands(); // اجرای تابع بازگشت به برندها
+    });
+  }
+
+  // اسکرول به popup مدل
+  setTimeout(() => {
+    const popup = document.getElementById('popupModel');
+    if (popup) popup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+function showTipPopup(fullModel, modelKey) {
+  const list = document.getElementById('tipList');
+  list.innerHTML = '';
+  openPopup('popupTip');
+  modelsWithTip[modelKey].forEach(tip => {
+    const li = document.createElement('li');
+    li.textContent = tip;
+    li.onclick = () => {
+      document.getElementById('brandInput').value = fullModel + ' - ' + tip;
+
+      // بستن همه پاپ‌آپ‌ها
+      while (popupStack.length > 0) {
+        closePopup();
+      }
+
+      // خاموش کردن overlay
+      document.getElementById('popupOverlay').style.display = 'none';
+    };
+    list.appendChild(li);
+  });
+}
+
+function backToBrands() {
+  // فقط بستن popupModel بدون دست زدن به stack
+  const popupModel = document.getElementById('popupModel');
+  popupModel.classList.add('hidden');
+  setTimeout(() => {
+    popupModel.style.display = 'none';
+    popupModel.classList.remove('hidden');
+  }, 300);
+
+  openPopup('popupBrand'); // دوباره به استک push می‌شود
+  
+  if (!currentlySelectedBrand) {
+    showBrandList('irani');
+    return;
+  }
+
+  const normalized = normalize(currentlySelectedBrand);
+  const isForeign = brands.khareji.some(b => normalize(b) === normalized);
+  showBrandList(isForeign ? 'khareji' : 'irani');
+}
+
+function backToModels() {
+ closePopup();
+  openPopup('popupModel');
+}
+
+  function openFeaturesPopup() {
+openPopup('featuresPopup'); // امکانات
+
+}
+  function confirmFeatures() {
+    const checkboxes = document.querySelectorAll('#featuresPopup input[type="checkbox"]');
+    const selected = [];
+
+    checkboxes.forEach(chk => {
+      if (chk.checked) selected.push(chk.value);
+    });
+
+    const featuresTextarea = document.getElementById('features');
+      featuresTextarea.value = selected.join(' - ');
+      closePopup();
+  }
+
+function openDescPopup() {
+    openPopup('descPopup');
+
+  }
+
+  function confirmDesc() {
+  const checkboxes = document.querySelectorAll('#descPopup input');
+  const selected = [];
+
+  
+
+  let dualChecked = false;
+  let dualValue = "";
+
+  let taxiChecked = false;
+  let taxiValue = "";
+
+let rangChecked = false;
+  let rangs = [];
+  
+  let shassiChecked = false;
+  let shassies = [];
+
+let consumableChecked = false;
+  const consumables = [];
+  
+  checkboxes.forEach(chk => {
+    if (chk.id === "consumableToggle") {
+      consumableChecked = chk.checked;
+    } else if (chk.name === "consumableItem" && chk.checked) {
+      consumables.push(chk.value);
+    } else if (chk.id === "dualToggle") {
+      dualChecked = chk.checked;
+    } else if (chk.name === "dualType" && chk.checked) {
+      dualValue = chk.value;
+    } else if (chk.id === "taxiToggle") {
+      taxiChecked = chk.checked;
+    } else if (chk.name === "taxiType" && chk.checked) {
+      taxiValue = chk.value;
+    } else if (chk.id === "shassiToggle") {
+    shassiChecked = chk.checked;
+  } else if (chk.name === "shassi" && chk.checked) {
+    shassies.push(chk.value);
+  }
+else if (chk.id === "rangToggle") {
+  rangChecked = chk.checked;
+} else if (chk.name === "rang" && chk.checked) {
+  rangs.push(chk.value);
+}
+  else if (
+      chk.checked &&
+      chk.name !== "dualType" &&
+      chk.name !== "taxiType" &&
+chk.name !== "rang" &&
+chk.name !== "shassi" &&
+chk.name !== "consumableItem" 
+    ) {
+      selected.push(chk.value);
+    }
+  });
+
+  if (dualChecked && dualValue) {
+    selected.push(`دوگانه (${dualValue})`);
+  }
+
+  if (taxiChecked && taxiValue) {
+    selected.push(`تاکسی (${taxiValue})`);
+  }
+if (rangChecked && rangs.length > 0) {
+  selected.push(`وضعیت رنگ شدگی(${rangs.join("، ")})`);
+}
+  if (shassiChecked && shassies.length > 0) {
+  selected.push(`وضعیت شاسی (${shassies.join("، ")})`);
+}
+
+if (consumableChecked && consumables.length > 0) {
+    selected.push(`مصرفی‌های تازه تعویض شده (${consumables.join("، ")})`);
+  }
+
+  const descTextarea = document.getElementById('desc');
+  descTextarea.value = selected.join(" - ");
+  closePopup();
+}
+function toggleConsumables() {
+  const checkbox = document.getElementById("consumableToggle");
+  const radios = document.getElementById("consumablesRadios");
+
+  if (checkbox.checked) {
+    radios.style.display = "grid";
+    // اسکرول خودکار برای دیده شدن زیرمجموعه
+    setTimeout(() => {
+      checkbox.closest('label')?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  } else {
+    radios.style.display = "none";
+  }
+}
+function toggleDualType() {
+  const checkbox = document.getElementById("dualToggle");
+  const box = document.getElementById("dualTypeRadios");
+  box.style.display = checkbox.checked ? "grid" : "none";
+
+  if (checkbox.checked) {
+    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+}
+
+function toggleRangType() {
+  const checkbox = document.getElementById("rangToggle");
+  const radios = document.getElementById("rangTypeRadios");
+
+  if (checkbox.checked) {
+    radios.style.display = "grid";
+    setTimeout(() => {
+      checkbox.closest('label')?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  } else {
+    radios.style.display = "none";
+  }
+}
+
+function toggleShassiType() {
+  const checkbox = document.getElementById("shassiToggle");
+  const radios = document.getElementById("shassiTypeRadios"); // مطمئن شو id در HTML هم همینه
+
+  if (checkbox.checked) {
+    radios.style.display = "grid";
+    // اسکرول خودکار برای دیده شدن
+    setTimeout(() => {
+      checkbox.closest('label')?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  } else {
+    radios.style.display = "none";
+  }
+}
+
+function toggleTaxiType() {
+  const checkbox = document.getElementById("taxiToggle");
+  const box = document.getElementById("taxiTypeRadios");
+  box.style.display = checkbox.checked ? "grid" : "none";
+
+  if (checkbox.checked) {
+    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+}
+function showHistory() {
+  // پاک‌سازی استک و جلوگیری از تکرار در history
+  popupStack.length = 0;
+  window.popupOpened = false;
+
+  // فقط یکبار history ثبت کن
+  window.history.pushState({ popupId: 'historyPopup' }, '', '#popup-history');
+
+  const popup = document.getElementById('historyPopup');
+  const list = document.getElementById('historyList');
+  const history = JSON.parse(localStorage.getItem('fileHistory')) || [];
+
+ 
+
+function extractLastNumber(code) {
+  const parts = code.split('-');
+  const lastPart = parts[parts.length - 1];
+  return parseInt(lastPart, 10) || 0;
+}
+
+history.sort((a, b) => extractLastNumber(a.code) - extractLastNumber(b.code));
+
+  if (history.length === 0) {
+    alert("📭 هیچ فایلی در تاریخچه نیست.");
+    return;
+  }
+
+  list.innerHTML = ''; // پاک کردن قبلی
+
+  history.forEach((item, index) => {
+    const li = document.createElement('li');
+    li.textContent = item.code;
+    li.style.cursor = 'pointer';
+    li.style.padding = '8px 10px';
+    li.style.borderBottom = '1px dashed #ccc';
+    let holdTimer = null;
+
+
+function startHoldToDelete() {
+  holdTimer = setTimeout(() => {
+    if (confirm(`❌ آیا مطمئن هستید که می‌خواهید کد "${item.code}" را حذف کنید؟`)) {
+      deleteHistoryItem(item.code);
+      showHistory();
+    }
+  }, 1300); // دو ثانیه نگه‌داشتن
+}
+
+function cancelHoldToDelete() {
+  clearTimeout(holdTimer);
+}
+
+li.addEventListener('mousedown', startHoldToDelete);
+li.addEventListener('mouseup', cancelHoldToDelete);
+li.addEventListener('mouseleave', cancelHoldToDelete);
+
+li.addEventListener('touchstart', startHoldToDelete);
+li.addEventListener('touchend', cancelHoldToDelete);
+li.addEventListener('touchcancel', cancelHoldToDelete);
+
+li.addEventListener('click', () => {
+  // فقط اگر حذف فعال نشده بود
+  document.getElementById('detailsText').innerText = item.text;
+  document.getElementById('detailsPopup').style.display = 'block';
+  window.selectedHistoryItem = item;
+});
+    list.appendChild(li);
+  });
+
+  popup.style.display = 'flex';
+}
+
+
+function fillFormWithHistory(item) {
+  const lines = item.text.split('\n').map(line => line.trim());
+
+  document.getElementById('code').value = extractValue(lines[0]);
+document.getElementById('area').value = convertToEnglishNumber(extractValue(lines[2]));
+  document.getElementById('brandInput').value = extractValue(lines[4]);
+  document.getElementById('price').value = convertToEnglishNumber(extractValue(lines[6]));
+  document.getElementById('year').value = convertToEnglishNumber(extractValue(lines[8]));
+  document.getElementById('km').value = convertToEnglishNumber(extractValue(lines[10]));
+document.getElementById('gearbox').value = extractValue(lines[12]);
+  document.getElementById('color').value = extractValue(lines[14]);
+  document.getElementById('motor').value = extractValue(lines[16]);
+  document.getElementById('body').value = extractValue(lines[18]);
+  document.getElementById('bimeh').value = convertToEnglishNumber(extractValue(lines[20]));
+  document.getElementById('features').value = extractValue(lines[22]);
+  document.getElementById('desc').value = extractValue(lines[24]);
+
+
+  updatePriceLabel();
+  updateKmLabel();
+// تشخیص اینکه برند ایرانیه یا خارجی
+const brandLine = extractValue(lines[2]);
+const brandName = brandLine.split('-')[0].trim();
+const isForeign = brands['khareji'].includes(brandName);
+
+// تغییر نوع سال‌ها بر اساس برند
+setYearOptions(isForeign);
+}
+
+// استخراج مقدار پس از دو نقطه
+function extractValue(line) {
+  const raw = line.split(':')[1]?.trim() || '';
+  return raw.replace(/\*\*/g, '').trim();
+}
+
+// تبدیل اعداد فارسی به انگلیسی
+function convertToEnglishNumber(faStr) {
+  return faStr.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[^\d]/g, '');
+}
+
+
+function applyDetailsEdit() {
+  if (!window.selectedHistoryItem) return;
+
+  fillFormWithHistory(window.selectedHistoryItem);
+  document.getElementById('detailsPopup').style.display = 'none';
+  document.getElementById('historyPopup').style.display = 'none';
+}
+
+function deleteHistoryItem(code) {
+  let history = JSON.parse(localStorage.getItem('fileHistory')) || [];
+  history = history.filter(item => item.code !== code);
+  localStorage.setItem('fileHistory', JSON.stringify(history));
+}
+document.addEventListener('click', function(event) {
+  const brandInput = document.getElementById('brandInput');
+  const featuresInput = document.getElementById('features');
+  const descInput = document.getElementById('desc');
+
+  const popupBrand = document.getElementById('popupBrand');
+  const featuresPopup = document.getElementById('featuresPopup');
+  const descPopup = document.getElementById('descPopup');
+
+  // اگر کلیک خارج از برند یا پاپ‌آپ برند بود، پاپ‌آپ برند بسته شود
+  if (
+    !brandInput.contains(event.target) && 
+    !popupBrand.contains(event.target)
+  ) {
+    popupBrand.classList.add('hidden');
+setTimeout(() => {
+  popupBrand.style.display = 'none';
+  popupBrand.classList.remove('hidden');
+}, 300);
+  }
+
+  // اگر کلیک خارج از امکانات یا پاپ‌آپ امکانات بود، پاپ‌آپ امکانات بسته شود
+  if (
+    !featuresInput.contains(event.target) && 
+    !featuresPopup.contains(event.target)
+  ) {
+    featuresPopup.classList.add('hidden');
+setTimeout(() => {
+  featuresPopup.style.display = 'none';
+  featuresPopup.classList.remove('hidden');
+}, 300);
+  }
+
+  // اگر کلیک خارج از توضیحات یا پاپ‌آپ توضیحات بود، پاپ‌آپ توضیحات بسته شود
+  if (
+    !descInput.contains(event.target) && 
+    !descPopup.contains(event.target)
+  ) {
+   descPopup.classList.add('hidden');
+setTimeout(() => {
+  descPopup.style.display = 'none';
+  descPopup.classList.remove('hidden');
+}, 300);
+  }
+});
+
+
+searchBrandInput.addEventListener('focus', () => {
+  setTimeout(() => {
+    const popup = document.getElementById('popupBrand');
+    if (popup) popup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
+});
+
+searchModelInput.addEventListener('focus', () => {
+  setTimeout(() => {
+    const popup = document.getElementById('popupModel');
+    if (popup) popup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
+});
+
+document.getElementById('popupOverlay').onclick = () => {
+  while (popupStack.length > 0) {
+    closePopup(); // استفاده از تابع با انیمیشن
+  }
+};
+
+const popupStack = [];
+
+function openPopup(id) {
+  const popup = document.getElementById(id);
+  if (!popup) return;
+
+  popup.classList.remove('hidden');
+  popup.style.display = 'block';
+
+  requestAnimationFrame(() => {
+    popup.classList.add('show');
+  });
+
+  document.getElementById('popupOverlay').style.display = 'block';
+
+
+ if (popupStack.length === 0) {
+  history.pushState({ popupId: id }, '', `#popup-${id}`);
+}
+popupStack.push(id);
+}
+
+function closePopup() {
+  
+
+  const id = popupStack.pop();
+  const popup = document.getElementById(id);
+  if (popup) {
+    popup.classList.remove('show');
+    popup.classList.add('hidden');
+    setTimeout(() => {
+      popup.style.display = 'none';
+      popup.classList.remove('hidden');
+    }, 300);
+  }
+
+  // فقط وقتی اولین پاپ‌آپ بسته میشه، تاریخچه رو برگرد
+  if (popupStack.length === 0 && window.location.hash.includes('popup-')) {
+    history.back();
+  }
+
+ 
+document.getElementById('popupOverlay').style.display = 'none';
+}
+
+window.onpopstate = function () {
+  const popupIds = [ 'popupBrand', 'popupModel', 'popupTip', 'featuresPopup', 'descPopup' ];
+
+  popupIds.forEach(id => {
+    const popup = document.getElementById(id);
+    if (popup && popup.style.display === 'block') {
+      popup.classList.add('hidden');
+      setTimeout(() => {
+        popup.style.display = 'none';
+        popup.classList.remove('hidden');
+      }, 300);
+    }
+  });
+
+  // بسته شدن تاریخچه و جزئیات
+  document.getElementById('historyPopup').style.display = 'none';
+  document.getElementById('detailsPopup').style.display = 'none';
+
+  popupStack.splice(0, popupStack.length);
+  document.getElementById('popupOverlay').style.display = 'none';
+};
+  
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closePopup();
+    document.getElementById('historyPopup').style.display = 'none';
+    document.getElementById('detailsPopup').style.display = 'none';
+  }
+});
+// حذف کلاس خطا هنگام تایپ در فیلدها
+window.addEventListener('DOMContentLoaded', () => {
+  const fieldsToWatch = [
+    'code', 'area', 'brandInput', 'price', 'year', 'km','gearbox',
+    'color', 'motor', 'body', 'bimeh', 'features', 'desc'
+  ];
+
+  fieldsToWatch.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', () => el.classList.remove('error'));
+    }
+  });
+});
+
+
+
   </script>
 </body>
 </html>
+
+
