@@ -6,7 +6,7 @@
   <style>
     body { font-family: Tahoma, sans-serif; margin: 20px; }
     input, textarea, button { display: block; margin: 8px 0; width: 300px; padding: 6px; }
-    #result { margin-top: 15px; font-weight: bold; color: green; }
+    #result { margin-top: 15px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -32,12 +32,16 @@
   <div id="result"></div>
 
   <script>
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbyF02w8EOy04XliJ64Q_1bGsZos4rafV2FxpevdLU304bxT9PkgNm0GewxJqUX8evb2/exec"; // لینک Web App منتشر شده
+    const webAppUrl = "YOUR_WEB_APP_URL_HERE"; // لینک Web App منتشر شده
 
     document.getElementById("myForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const formData = new FormData(this);
       const params = new URLSearchParams(formData);
+
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.color = "black";
+      resultDiv.innerText = "در حال ارسال...";
 
       try {
         const response = await fetch(webAppUrl, {
@@ -45,21 +49,23 @@
           body: params
         });
 
-        if (!response.ok) throw new Error("ارتباط با سرور برقرار نشد");
+        if (!response.ok) {
+          throw new Error(`خطای اتصال به سرور (${response.status})`);
+        }
 
         const result = await response.json();
 
-        if(result.status === "success") {
-          document.getElementById("result").style.color = "green";
-          document.getElementById("result").innerText = result.message;
+        if (result.status === "success") {
+          resultDiv.style.color = "green";
+          resultDiv.innerText = result.message;
         } else {
-          document.getElementById("result").style.color = "red";
-          document.getElementById("result").innerText = result.message || "خطا در ارسال فرم";
+          resultDiv.style.color = "red";
+          resultDiv.innerText = result.message || "خطا در ارسال فرم";
         }
 
       } catch(err) {
-        document.getElementById("result").style.color = "red";
-        document.getElementById("result").innerText = "خطا: " + err.message;
+        resultDiv.style.color = "red";
+        resultDiv.innerText = "خطا: " + err.message + "\n🔹 لطفاً مطمئن شوید که لینک Web App صحیح است و دسترسی Anyone, even anonymous فعال است.";
       }
     });
   </script>
