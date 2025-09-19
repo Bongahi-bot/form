@@ -874,6 +874,7 @@ function viewFile() {
  //const copyBtn = document.getElementById('copyBtn');
   //copyBtn.style.display = 'block';
   document.getElementById('sendBtn').style.display = 'block';    // نمایش دکمه ارسال
+  document.getElementById('resetBtn').style.display = 'block';
 }
 
 
@@ -999,7 +1000,7 @@ function sendToTelegram() {
   // پنهان کردن خروجی و دکمه‌ها
   document.getElementById('output').style.display = 'none';
   document.getElementById('output').innerText = '';
-  document.getElementById('copyBtn').style.display = 'none';
+  document.getElementById('sendBtn').style.display = 'none';
   document.getElementById('resetBtn').style.display = 'none';
 
   // حذف کلاس‌های خطا
