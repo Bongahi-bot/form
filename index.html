@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+      }
+
+      .form-container {
+        max-height: 300px;   /* ارتفاع محدوده نمایش (اول ۵ باکس دیده میشه) */
+        overflow-y: auto;    /* فعال شدن اسکرول عمودی */
+        border: 1px solid #ccc;
+        padding: 15px;
+        border-radius: 8px;
+      }
+
+      .form-box {
+        margin-bottom: 12px;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #aaa;
+        border-radius: 5px;
+      }
+
+      button {
+        margin-top: 15px;
+        padding: 10px 15px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>فرم تستی</h2>
+    <div class="form-container">
+      <form id="myForm" method="post">
+        <div class="form-box"><input type="text" name="box1" placeholder="باکس 1"></div>
+        <div class="form-box"><input type="text" name="box2" placeholder="باکس 2"></div>
+        <div class="form-box"><input type="text" name="box3" placeholder="باکس 3"></div>
+        <div class="form-box"><input type="text" name="box4" placeholder="باکس 4"></div>
+        <div class="form-box"><input type="text" name="box5" placeholder="باکس 5"></div>
+        <div class="form-box"><input type="text" name="box6" placeholder="باکس 6"></div>
+        <div class="form-box"><input type="text" name="box7" placeholder="باکس 7"></div>
+        <div class="form-box"><input type="text" name="box8" placeholder="باکس 8"></div>
+        <div class="form-box"><input type="text" name="box9" placeholder="باکس 9"></div>
+        <div class="form-box"><input type="text" name="box10" placeholder="باکس 10"></div>
+        <div class="form-box"><input type="text" name="box11" placeholder="باکس 11"></div>
+        <button type="submit">ارسال</button>
+      </form>
+    </div>
+
+    <script>
+      document.getElementById("myForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        google.script.run
+          .withSuccessHandler(function(msg) {
+            alert(msg);
+            document.getElementById("myForm").reset();
+          })
+          .doPost(Object.fromEntries(new FormData(this)));
+      });
+    </script>
+  </body>
+</html>
